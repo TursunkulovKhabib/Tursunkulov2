@@ -1,4 +1,4 @@
-package org.tursunkulov.authorization.models;
+package org.tursunkulov.authorization.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

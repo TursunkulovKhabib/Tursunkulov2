@@ -1,8 +1,9 @@
-package org.tursunkulov.authorization.repositories;
+package org.tursunkulov.authorization.repository;
 
 import lombok.Getter;
 import org.springframework.stereotype.Repository;
-import org.tursunkulov.authorization.models.User;
+import org.tursunkulov.authorization.contoller.UserController;
+import org.tursunkulov.authorization.model.User;
 import org.tursunkulov.authorization.service.UserService;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 @Repository
 public class UserRepository {
 
+    @Getter
     private static List<User> users = new ArrayList<>();
 
     public UserRepository() {
@@ -24,11 +26,11 @@ public class UserRepository {
         return UserService.newUser();
     }
 
-    public static String checkUser(User user) {
+    public static String checkUser(String username, String password) {
         if (users.isEmpty()) {
-            UserRepository.saveUser(user);
+            UserService.registration();
         } else {
-            if (users.contains(user)) {
+            if (UserController.findUser(username, password)) {
                  return UserService.authorisation();
             } else {
                  return UserService.incorrectData();
@@ -37,7 +39,4 @@ public class UserRepository {
         return "Error";
     }
 
-    public static List<User> getUsers() {
-        return users;
-    }
 }
