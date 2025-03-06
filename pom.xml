@@ -8,7 +8,7 @@
         <version>3.4.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.khabib</groupId>
+    <groupId>org.tursunkulov</groupId>
     <artifactId>Tursunkulov2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Tursunkulov2</name>
@@ -40,13 +40,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -85,7 +78,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.30</version>
+                            <version>1.18.24</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
@@ -98,7 +91,7 @@
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.30</version>
+                            <version>1.18.24</version>
                         </exclude>
                     </excludes>
                 </configuration>
