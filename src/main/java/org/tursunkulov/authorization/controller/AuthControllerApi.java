@@ -1,11 +1,11 @@
-package org.tursunkulov.authorization.contoller;
+package org.tursunkulov.authorization.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.web.bind.annotation.RequestParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Авторизация & Registration Api", description = "Операции для авторизации и регистрации")
 public interface AuthControllerApi {

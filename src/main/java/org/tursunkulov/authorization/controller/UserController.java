@@ -1,4 +1,4 @@
-package org.tursunkulov.authorization.contoller;
+package org.tursunkulov.authorization.controller;
 
 import java.util.List;
 import java.util.Optional;

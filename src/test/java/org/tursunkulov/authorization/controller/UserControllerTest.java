@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.tursunkulov.authorization.contoller.UserController;
 import org.tursunkulov.authorization.model.User;
 import org.tursunkulov.authorization.service.UserService;
 

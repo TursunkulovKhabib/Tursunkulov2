@@ -11,8 +11,7 @@ import java.util.List;
 @Repository
 public class AuthRepository {
 
-  @Getter
-  private static List<User> users = new ArrayList<>();
+  @Getter private static List<User> users = new ArrayList<>();
 
   public AuthRepository() {
     users.add(new User(1, "Пётр", "1234", "1212@g.com", "88005555555"));
@@ -32,5 +31,4 @@ public class AuthRepository {
     }
     return "Проверьте корректность данных";
   }
-
 }

@@ -1,11 +1,10 @@
 package org.tursunkulov.authorization.repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import org.springframework.stereotype.Repository;
 import org.tursunkulov.authorization.model.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Repository
