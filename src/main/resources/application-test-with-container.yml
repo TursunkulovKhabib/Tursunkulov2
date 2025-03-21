@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: JavaMTS
+  application:
+    name: spring-test-with-containers
+server:
+  port: 8082
