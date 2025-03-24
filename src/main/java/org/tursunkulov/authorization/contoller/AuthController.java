@@ -1,33 +1,35 @@
 package org.tursunkulov.authorization.contoller;
 
-import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.tursunkulov.authorization.model.User;
-import org.tursunkulov.authorization.repository.UserRepository;
-import org.tursunkulov.authorization.service.UserService;
+import org.tursunkulov.authorization.service.AuthService;
 
-import java.util.List;
-
+@Slf4j
 @RestController
-@RequestMapping("/user")
-public class AuthController {
+@RequestMapping("/login")
+public class AuthController implements AuthControllerApi {
 
-    @PostMapping("/registartion")
-    public static String registration(@RequestParam int id, @RequestParam String username,
-                                      @RequestParam String password,
-                                      @RequestParam String email,
-                                      @RequestParam String phoneNumber) {
+    @Override
+    @PostMapping("/registration")
+    public ResponseEntity<String> registration(@RequestParam int id, @RequestParam String username,
+                                                      @RequestParam String password,
+                                                      @RequestParam String email,
+                                                      @RequestParam String phoneNumber) {
         User user = new User(id, username, password, email, phoneNumber);
-        return UserRepository.saveUser(user);
+        log.debug("Регистрация пользователя");
+        return ResponseEntity.ok(AuthService.registration(user));
     }
 
+    @Override
     @PostMapping("/authorization")
-    public String authorization(@RequestParam String username,
+    public ResponseEntity<String> authentication(@RequestParam String username,
                                 @RequestParam String password) {
-        return UserRepository.checkUser(username, password);
-    }
-
-    @GetMapping("/info")
-    public List<User> info() {
-        return UserService.allUsers();
+        log.debug("Аутентификация пользователя");
+        return ResponseEntity.ok(AuthService.checkUser(username, password));
     }
 }

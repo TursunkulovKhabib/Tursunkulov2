@@ -1,38 +1,45 @@
 package org.tursunkulov.authorization.service;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import lombok.extern.slf4j.Slf4j;
 import org.tursunkulov.authorization.model.User;
 import org.tursunkulov.authorization.repository.UserRepository;
 
-import java.util.List;
-
 @Service
 @AllArgsConstructor
-@Slf4j
 public class UserService {
 
-    public static void registration() {
-        User newUser = new User(0, "Mitya", "121213123", "ffff@g.com", "88003432221");
-        UserRepository.saveUser(newUser);
-    }
+  public static Optional<List<User>> allUsers() {
+    return Optional.ofNullable(UserRepository.getUsers());
+  }
 
-    public static List<User> allUsers() {
-        log.debug("Получение списка всех пользователей");
-        return UserRepository.getUsers();
-    }
+  public static Optional<String> getUsername(int id) {
+    return Optional.ofNullable(UserRepository.findUserById(id));
+  }
 
-    public static String newUser() {
-        return "Новый пользователь добавлен";
-    }
+  public static void deleteUserById(int id) {
+    UserRepository.deleteById(id);
+  }
 
-    public static String authorisation() {
-        return "Добро пожаловать!";
-    }
+  public static void deleteUserByUsername(String username) {
+    UserRepository.deleteByUsername(username);
+  }
 
-    public static String incorrectData() {
-        return "Проверьте корректность данных";
-    }
+  public static User patchPhoneNumber(int id, String phoneNumber) {
+    return UserRepository.patchPhoneNumber(id, phoneNumber);
+  }
 
+  public static User patchEmail(int id, String email) {
+    return UserRepository.patchEmail(id, email);
+  }
+
+  public static void updateUserById(int id, User user) {
+    UserRepository.updateUserById(id, user);
+  }
+
+  public static void updateUserByUsername(String username, User user) {
+    UserRepository.updateUserByUsername(username, user);
+  }
 }

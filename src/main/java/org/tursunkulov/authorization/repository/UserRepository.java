@@ -2,9 +2,7 @@ package org.tursunkulov.authorization.repository;
 
 import lombok.Getter;
 import org.springframework.stereotype.Repository;
-import org.tursunkulov.authorization.contoller.UserController;
 import org.tursunkulov.authorization.model.User;
-import org.tursunkulov.authorization.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,22 +19,77 @@ public class UserRepository {
         users.add(new User(2, "Andrew", "1234", "1sds12@g.com", "88885555555"));
     }
 
-    public static String saveUser(User user) {
-        users.add(user);
-        return UserService.newUser();
-    }
-
-    public static String checkUser(String username, String password) {
-        if (users.isEmpty()) {
-            UserService.registration();
-        } else {
-            if (UserController.findUser(username, password)) {
-                 return UserService.authorisation();
-            } else {
-                 return UserService.incorrectData();
+    public static boolean findUser(String username, String password) {
+        for(User user: UserRepository.getUsers()) {
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return true;
             }
         }
-        return "Error";
+        return false;
     }
 
+    public static String findUserById(int id) {
+        for(User user: UserRepository.getUsers()) {
+            if(user.getId() == id) {
+                return user.getUsername();
+            }
+        }
+        return "Неверные данные";
+    }
+
+    public static void deleteById(int id) {
+        for(User user: UserRepository.getUsers()) {
+            if(user.getId() == id) {
+                users.remove(user);
+            }
+        }
+    }
+
+    public static void deleteByUsername(String username) {
+        for(User user: UserRepository.getUsers()) {
+            if(user.getUsername().equals(username)) {
+                users.remove(user);
+            }
+        }
+    }
+
+    public static User patchPhoneNumber(int id, String phoneNumber) {
+        for(User user: UserRepository.getUsers()) {
+            if(user.getId() == id) {
+                user.setPhoneNumber(phoneNumber);
+            }
+        }
+        return users.get(id);
+    }
+
+    public static User patchEmail(int id, String email) {
+        for(User user: UserRepository.getUsers()) {
+            if(user.getId() == id) {
+                user.setEmail(email);
+            }
+        }
+        return users.get(id);
+    }
+
+    public static void updateUserById(int id, User user) {
+        for(User users: UserRepository.getUsers()) {
+            if(users.getId() == id) {
+                users.setUsername(user.getUsername());
+                users.setPassword(user.getPassword());
+                users.setEmail(user.getEmail());
+                users.setPhoneNumber(user.getPhoneNumber());
+            }
+        }
+    }
+
+    public static void updateUserByUsername(String username, User user) {
+        for(User users: UserRepository.getUsers()) {
+            if(users.getUsername().equals(username)) {
+                users.setUsername(user.getUsername());
+                users.setPassword(user.getPassword());
+                users.setEmail(user.getEmail());
+                users.setPhoneNumber(user.getPhoneNumber());
+            }
+        }
+    }
 }
