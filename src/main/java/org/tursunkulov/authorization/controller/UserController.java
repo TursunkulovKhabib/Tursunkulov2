@@ -1,16 +1,15 @@
 package org.tursunkulov.authorization.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.tursunkulov.authorization.model.User;
+import org.tursunkulov.authorization.entity.User;
 import org.tursunkulov.authorization.service.UserService;
 
 @Slf4j
@@ -33,9 +32,9 @@ public class UserController implements UserControllerApi {
 
   @Override
   @GetMapping("/username/{id}")
-  public ResponseEntity<Optional<String>> getUser(@PathVariable int id) {
+  public ResponseEntity<Optional<User>> getUser(@PathVariable int id) {
     log.info("Получения имени пользователя по id");
-    return ResponseEntity.ok(userService.getUsername(id));
+    return ResponseEntity.ok(userService.findUserById(id));
   }
 
   @Override
@@ -56,7 +55,7 @@ public class UserController implements UserControllerApi {
 
   @Override
   @PatchMapping("/patchPhoneNumber/{id}")
-  public ResponseEntity<User> patchPhoneNumber(
+  public ResponseEntity<Optional<User>> patchPhoneNumber(
       @PathVariable int id, @PathVariable String phoneNumber) {
     log.info("Смена номера телефона");
     return ResponseEntity.ok(userService.patchPhoneNumber(id, phoneNumber));
@@ -64,7 +63,8 @@ public class UserController implements UserControllerApi {
 
   @Override
   @PatchMapping("/patchEmail/{id}")
-  public ResponseEntity<User> patchEmail(@PathVariable int id, @PathVariable String email) {
+  public ResponseEntity<Optional<User>> patchEmail(
+      @PathVariable int id, @PathVariable String email) {
     log.info("Смена электронной почты");
     return ResponseEntity.ok(userService.patchEmail(id, email));
   }
