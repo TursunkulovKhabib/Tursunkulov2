@@ -34,7 +34,7 @@ public class UserControllerTest {
   public void getAllUsersTest() throws Exception {
     List<User> users = List.of(new User(3, "Andrew", "1234", "wssw@gmail.com", "87776632233"),
         new User(4, "Andrey", "123wr", "swws@gmail.com", "87776632255"));
-    when(UserService.allUsers()).thenReturn(Optional.of(users));
+    when(userService.allUsers()).thenReturn(Optional.of(users));
 
     mvc.perform(get("/user/info/"))
         .andExpect(status().isOk())
@@ -54,7 +54,7 @@ public class UserControllerTest {
   @DisplayName("Тест на успешное получение имени пользователя по ID")
   public void getUserByIdTest1() throws Exception {
     User user = new User(3, "Andrew", "1234", "wssw@gmail.com", "87776632233");
-    when(UserService.getUsername(3)).thenReturn(Optional.ofNullable(user.getUsername()));
+    when(userService.getUsername(3)).thenReturn(Optional.ofNullable(user.getUsername()));
     mvc.perform(get("/api/users/3"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.username").value("Andrew"));
@@ -69,7 +69,7 @@ public class UserControllerTest {
   @Test
   @DisplayName("Тест на неудачное получение имени пользователя по ID : User Not Found")
   public void getUserByIdTest3() throws Exception {
-    when(UserService.getUsername(111))
+    when(userService.getUsername(111))
         .thenThrow(new NoSuchElementException(String.valueOf(111)));
     mvc.perform(get("/api/users/111")).andExpect(status().isNotFound());
   }

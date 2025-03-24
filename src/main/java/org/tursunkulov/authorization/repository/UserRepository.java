@@ -3,6 +3,7 @@ package org.tursunkulov.authorization.repository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.tursunkulov.authorization.model.User;
 

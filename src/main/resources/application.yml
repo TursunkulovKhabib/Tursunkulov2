@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: app
+  security:
+    user:
+      name: admin
+      password: admin
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: JavaMTS
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+springdoc:
+  swagger-ui:
+    path: /api-docs
+    enabled: true
+    operationsSorter: alpha
+    tagsSorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+      base-path: /admin/actuator
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      distribution:
+        percentiles-histogram: true
+
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 210
+      min-spare: 10
+
+resilience4j.ratelimiter:
+  instances:
+    apiRateLimiter:
+      limit-for-period: 5
+      limit-refresh-period: 10s
+      timeout-duration: 0
+
+resilience4j.circuitbreaker:
+  instances:
+    apiCircuitBreaker:
+      failure-rate-threshold: 50
+      wait-duration-in-open-state: 10s
+      permitted-number-of-calls-in-half-open-state: 3
+      sliding-window-type: count_based
+      sliding-window-size: 10
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.example.app: DEBUG

@@ -1,5 +1,8 @@
 package org.tursunkulov.authorization.controller;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,8 +14,13 @@ import org.tursunkulov.authorization.service.AuthService;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 @RequestMapping("/login")
+@RateLimiter(name = "apiRateLimiter")
+@CircuitBreaker(name = "apiCircuitBreaker")
 public class AuthController implements AuthControllerApi {
+
+  private final AuthService authService;
 
   @Override
   @PostMapping("/registration")
@@ -24,7 +32,7 @@ public class AuthController implements AuthControllerApi {
       @RequestParam String phoneNumber) {
     User user = new User(id, username, password, email, phoneNumber);
     log.debug("Регистрация пользователя");
-    return ResponseEntity.ok(AuthService.registration(user));
+    return ResponseEntity.ok(authService.registration(user));
   }
 
   @Override
@@ -32,6 +40,6 @@ public class AuthController implements AuthControllerApi {
   public ResponseEntity<String> authentication(
       @RequestParam String username, @RequestParam String password) {
     log.debug("Аутентификация пользователя");
-    return ResponseEntity.ok(AuthService.checkUser(username, password));
+    return ResponseEntity.ok(authService.checkUser(username, password));
   }
 }
