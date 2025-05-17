@@ -19,47 +19,49 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers
 public class AuthControllerTestForDataBase {
 
-  @Autowired private AuthRepository authRepository;
+    @Autowired
+    private AuthRepository authRepository;
 
-  @Autowired private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-  User firstUser = new User("Max", "1234", "maxim@gmail.com", "+79226762223");
-  User secondUser = new User("Oleg", "5678", "goodjob@gmail.com", "+79665292243");
+    User firstUser = new User("Max", "1234", "maxim@gmail.com", "+79226762223");
+    User secondUser = new User("Oleg", "5678", "goodjob@gmail.com", "+79665292243");
 
-  @Test
-  void shouldFindUserById() {
-    authRepository.save(firstUser);
-    authRepository.save(secondUser);
-    assertTrue(userRepository.findUserById(firstUser.getId()).isPresent());
-    assertTrue(userRepository.findUserById(secondUser.getId()).isPresent());
-  }
+    @Test
+    void shouldFindUserById() {
+        authRepository.save(firstUser);
+        authRepository.save(secondUser);
+        assertTrue(userRepository.findUserById(firstUser.getId()).isPresent());
+        assertTrue(userRepository.findUserById(secondUser.getId()).isPresent());
+    }
 
-  @Test
-  void shouldNotFindUserByEmail() {
-    authRepository.save(firstUser);
-    authRepository.save(secondUser);
-    assertTrue(userRepository.findUserById(firstUser.getId()).isEmpty());
-    assertTrue(userRepository.findUserById(secondUser.getId()).isEmpty());
-  }
+    @Test
+    void shouldNotFindUserByEmail() {
+        authRepository.save(firstUser);
+        authRepository.save(secondUser);
+        assertTrue(userRepository.findUserById(firstUser.getId()).isEmpty());
+        assertTrue(userRepository.findUserById(secondUser.getId()).isEmpty());
+    }
 
-  @Test
-  void shouldAuthenticateUser() {
-    authRepository.save(firstUser);
-    authRepository.save(secondUser);
-    assertTrue(userRepository.findUserById(firstUser.getId()).isPresent());
-    assertTrue(userRepository.findUserById(secondUser.getId()).isPresent());
-    assertEquals(
-        firstUser.getUsername(),
-        userRepository.findUserById(firstUser.getId()).get().getUsername());
-    assertEquals(
-        secondUser.getUsername(),
-        userRepository.findUserById(secondUser.getId()).get().getUsername());
-  }
+    @Test
+    void shouldAuthenticateUser() {
+        authRepository.save(firstUser);
+        authRepository.save(secondUser);
+        assertTrue(userRepository.findUserById(firstUser.getId()).isPresent());
+        assertTrue(userRepository.findUserById(secondUser.getId()).isPresent());
+        assertEquals(
+                firstUser.getUsername(),
+                userRepository.findUserById(firstUser.getId()).get().getUsername());
+        assertEquals(
+                secondUser.getUsername(),
+                userRepository.findUserById(secondUser.getId()).get().getUsername());
+    }
 
-  @Test
-  void shouldNotAuthenticateUser() {
-    assertEquals(firstUser.getUsername(), userRepository.findUserById(firstUser.getId()).isEmpty());
-    assertEquals(
-        secondUser.getUsername(), userRepository.findUserById(secondUser.getId()).isEmpty());
-  }
+    @Test
+    void shouldNotAuthenticateUser() {
+        assertEquals(firstUser.getUsername(), userRepository.findUserById(firstUser.getId()).isEmpty());
+        assertEquals(
+                secondUser.getUsername(), userRepository.findUserById(secondUser.getId()).isEmpty());
+    }
 }
