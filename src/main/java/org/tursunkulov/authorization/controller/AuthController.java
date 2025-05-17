@@ -20,27 +20,27 @@ import org.tursunkulov.authorization.service.AuthService;
 @CircuitBreaker(name = "apiCircuitBreaker")
 public class AuthController implements AuthControllerApi {
 
-  private final AuthService authService;
+    private final AuthService authService;
 
-  @Override
-  @PostMapping("/registration")
-  public ResponseEntity<Void> registration(
-      @RequestParam String username,
-      @RequestParam String password,
-      @RequestParam String email,
-      @RequestParam String phoneNumber) {
-    User user = new User(username, password, email, phoneNumber);
-    log.debug("Регистрация пользователя");
-    authService.registration(user);
-    return ResponseEntity.noContent().build();
-  }
+    @Override
+    @PostMapping("/registration")
+    public ResponseEntity<Void> registration(
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam String email,
+            @RequestParam String phoneNumber) {
+        User user = new User(username, password, email, phoneNumber);
+        log.debug("Регистрация пользователя");
+        authService.registration(user);
+        return ResponseEntity.noContent().build();
+    }
 
-  @Override
-  @PostMapping("/authorization")
-  public ResponseEntity<Void> authentication(
-      @RequestParam String username, @RequestParam String password) {
-    log.debug("Аутентификация пользователя");
-    authService.checkUser(username, password);
-    return ResponseEntity.noContent().build();
-  }
+    @Override
+    @PostMapping("/authorization")
+    public ResponseEntity<Void> authentication(
+            @RequestParam String username, @RequestParam String password) {
+        log.debug("Аутентификация пользователя");
+        authService.checkUser(username, password);
+        return ResponseEntity.noContent().build();
+    }
 }

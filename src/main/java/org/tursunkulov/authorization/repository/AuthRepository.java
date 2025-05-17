@@ -6,7 +6,7 @@ import org.tursunkulov.authorization.entity.User;
 
 @Repository
 public interface AuthRepository extends JpaRepository<User, String> {
-  void saveUser(User user);
+    void saveUser(User user);
 
-  void checkUser(String username, String password);
+    void checkUser(String username, String password);
 }
