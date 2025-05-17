@@ -12,8 +12,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.tursunkulov.authorization.model.AuditEventDto;
-import org.tursunkulov.authorization.kafka.AuditProducer;
 import org.tursunkulov.authorization.entity.User;
+import org.tursunkulov.authorization.kafka.AuditProducer;
 import org.tursunkulov.authorization.repository.UserRepository;
 
 @Service
@@ -27,69 +27,75 @@ public class UserService {
   @Transactional
   @Cacheable("users")
   public Optional<List<User>> allUsers() {
+    // Без аудита чтения списка
     return Optional.ofNullable(userRepository.allUsers());
   }
 
   @Transactional
   @CachePut(value = "users", key = "#id")
   public Optional<User> findUserById(int id) {
+    // Без аудита простого чтения
     return userRepository.findUserById(id);
   }
 
   @Transactional
   @CacheEvict(value = "users", key = "#id")
-  public void deleteUserById(int id) {
+  public void deleteUserById(int id, UUID actorId) {
     userRepository.deleteById(id);
-    sendAudit("DELETE_BY_ID:" + id, null);
+    sendAudit("DELETE_BY_ID:" + id, actorId);
   }
 
   @Transactional
   @CacheEvict(value = "username", key = "#username")
-  public void deleteUserByUsername(String username) {
+  public void deleteUserByUsername(String username, UUID actorId) {
     userRepository.deleteByUsername(username);
-    sendAudit("DELETE_BY_USERNAME:" + username, null);
+    sendAudit("DELETE_BY_USERNAME:" + username, actorId);
   }
 
   @Transactional
   @CachePut(value = "users", key = "#id")
-  public Optional<User> patchPhoneNumber(int id, String phoneNumber) {
-    var result = userRepository.patchPhoneNumber(id, phoneNumber);
-    result.ifPresent(user -> sendAudit("PATCH_PHONE:" + id, user.getId()));
-    return result;
+  public Optional<User> patchPhoneNumber(int id, String phoneNumber, UUID actorId) {
+    Optional<User> updated = userRepository.patchPhoneNumber(id, phoneNumber);
+    updated.ifPresent(u -> sendAudit("PATCH_PHONE_NUMBER:" + id, actorId));
+    return updated;
   }
 
   @Transactional
   @CachePut(value = "users", key = "#id")
-  public Optional<User> patchEmail(int id, String email) {
-    var result = userRepository.patchEmail(id, email);
-    result.ifPresent(user -> sendAudit("PATCH_EMAIL:" + id, user.getId()));
-    return result;
+  public Optional<User> patchEmail(int id, String email, UUID actorId) {
+    Optional<User> updated = userRepository.patchEmail(id, email);
+    updated.ifPresent(u -> sendAudit("PATCH_EMAIL:" + id, actorId));
+    return updated;
   }
 
   @Transactional
   @CachePut(value = "user", key = "#id")
-  public void updateUserById(int id, User user) {
+  public void updateUserById(int id, User user, UUID actorId) {
     userRepository.updateUserById(id, user);
-    sendAudit("UPDATE_BY_ID:" + id, user.getId());
+    sendAudit("UPDATE_BY_ID:" + id, actorId);
   }
 
   @Transactional
   @CacheEvict(value = "user", allEntries = true)
-  public void updateUserByUsername(String username, User user) {
+  public void updateUserByUsername(String username, User user, UUID actorId) {
     userRepository.updateUserByUsername(username, user);
-    sendAudit("UPDATE_BY_USERNAME:" + username, user.getId());
+    sendAudit("UPDATE_BY_USERNAME:" + username, actorId);
   }
 
-  private void sendAudit(String action, Integer userUuid) {
-    UUID id = userUuid != null
-            ? UUID.nameUUIDFromBytes(userUuid.toString().getBytes())
-            : UUID.randomUUID();
+  /**
+   * Формирует и отправляет AuditEventDto в Kafka.
+   *
+   * @param action  краткое описание действия
+   * @param actorId UUID пользователя, инициировавшего действие (берётся из header'а)
+   */
+  private void sendAudit(String action, UUID actorId) {
     AuditEventDto event = AuditEventDto.builder()
             .eventId(UUID.randomUUID())
-            .userId(id)
+            .userId(actorId)
             .action(action)
             .timestamp(Instant.now())
             .build();
     auditProducer.send(event);
+    log.debug("Audit event sent: {}", event);
   }
 }
