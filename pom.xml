@@ -7,8 +7,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.2</version>
-        <relativePath/>
+        <version>3.2.4</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>org.tursunkulov</groupId>
@@ -20,9 +20,22 @@
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
-        <!-- PostgreSQL driver, совместимый с PG 14 -->
+        <!-- Override Flyway version to support PostgreSQL 17.x -->
+        <flyway.version>9.22.3</flyway.version>
+        <!-- PostgreSQL driver version compatible with PG 17 -->
         <postgresql.version>42.6.0</postgresql.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Enforce Flyway version -->
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Boot Starters -->
@@ -60,6 +73,10 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
 
         <!-- Kafka -->
         <dependency>
@@ -84,10 +101,11 @@
             <version>2.2.0</version>
         </dependency>
 
-        <!-- Flyway — версия берётся из BOM Spring Boot -->
+        <!-- Flyway -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
 
         <!-- PostgreSQL Driver -->

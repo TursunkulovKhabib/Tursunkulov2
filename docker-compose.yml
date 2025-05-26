@@ -1,18 +1,6 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    image: myapp:latest
-    # слушает 8080 внутри контейнера, наружу пробрасываем 8084
-    ports:
-      - "8084:8080"
-    networks:
-      - monitoring
-    depends_on:
-      - postgres
-      - kafka
-
   # БД Postgres
   postgres:
     image: postgres:14
