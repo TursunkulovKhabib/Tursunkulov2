@@ -1,5 +1,7 @@
 package org.tursunkulov.authorization.withconteiner;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,8 +12,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.tursunkulov.Application;
 import org.tursunkulov.authorization.security.SecurityConfig;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @SpringBootTest(classes = {Application.class, SecurityConfig.class})

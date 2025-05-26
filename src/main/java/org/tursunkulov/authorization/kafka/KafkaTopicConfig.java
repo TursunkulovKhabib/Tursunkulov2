@@ -9,14 +9,11 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Value("${topic.audit}")
-    private String auditTopic;
+  @Value("${topic.audit}")
+  private String auditTopic;
 
-    @Bean
-    public NewTopic auditTopic() {
-        return TopicBuilder.name(auditTopic)
-                .partitions(3)
-                .replicas(1)
-                .build();
-    }
+  @Bean
+  public NewTopic auditTopic() {
+    return TopicBuilder.name(auditTopic).partitions(3).replicas(1).build();
+  }
 }

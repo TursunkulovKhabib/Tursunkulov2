@@ -1,6 +1,11 @@
 package org.tursunkulov.authorization.withconteiner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.Instant;
+import java.util.Map;
+import java.util.UUID;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -20,12 +25,6 @@ import org.tursunkulov.authorization.model.AuditEventDto;
 import org.tursunkulov.authorization.outbox.OutboxEventService;
 import org.tursunkulov.authorization.outbox.OutboxRepository;
 import org.tursunkulov.authorization.outbox.OutboxScheduler;
-
-import java.time.Instant;
-import java.util.Map;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Testcontainers

@@ -1,65 +1,67 @@
 package org.tursunkulov.authorization.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.tursunkulov.authorization.outbox.OutboxRecord;
 
-@Data
+@Entity
+@Table(name = "\"user\"")
 @Getter
 @Setter
-@Schema(name = "User", description = "Сущность пользователя")
-@Entity
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Schema(name = "User", description = "Сущность пользователя")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     @Schema(description = "Уникальный идентификатор пользователя")
-    private int id;
+    private Integer id;
 
     @NotNull
-    @Schema(description = "Уникальное пользовательское имя")
     @Size(min = 1, max = 20)
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(name = "username", nullable = false, unique = true, length = 20)
     private String username;
 
     @NotNull
-    @Schema(description = "Пароль")
-    @Size(min = 1)
     @Column(name = "password", nullable = false)
     private String password;
 
     @NotBlank
-    @Schema(description = "Электронная почта")
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @NotBlank
-    @Schema(description = "Номер телефона")
-    @Column(name = "phoneNumber", nullable = false)
+    @NotNull
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @ManyToMany(
-            mappedBy = "user",
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<User> users = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<OutboxRecord> outboxRecords = new ArrayList<>();
 
     public User(String username, String password, String email, String phoneNumber) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
-    }
-
-    public User() {
     }
 }

@@ -1,96 +1,74 @@
 package org.tursunkulov.authorization.controller;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.tursunkulov.authorization.entity.User;
 import org.tursunkulov.authorization.service.UserService;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
-@RateLimiter(name = "apiRateLimiter")
-@CircuitBreaker(name = "apiCircuitBreaker")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/info")
-    public ResponseEntity<Optional<List<User>>> info(
-            @RequestHeader("userId") UUID userId) {
+    @GetMapping
+    public ResponseEntity<List<User>> getAll(@RequestHeader("userId") UUID userId) {
         log.info("User {} requested all users", userId);
         return ResponseEntity.ok(userService.allUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUser(
-            @RequestHeader("userId") UUID userId,
-            @PathVariable int id) {
+    public ResponseEntity<User> getById(
+        @RequestHeader("userId") UUID userId,
+        @PathVariable Integer id) {
+        User user = userService.findUserById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         log.info("User {} requested user by id {}", userId, id);
-        return ResponseEntity.ok(userService.findUserById(id));
+        return ResponseEntity.ok(user);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteById(
-            @RequestHeader("userId") UUID userId,
-            @PathVariable int id) {
+    @PostMapping
+    public ResponseEntity<User> create(
+        @RequestHeader("userId") UUID userId,
+        @Valid @RequestBody User user) {
+        User created = userService.createUser(user, userId);
+        log.info("User {} created new user {}", userId, created.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> update(
+        @RequestHeader("userId") UUID userId,
+        @PathVariable Integer id,
+        @Valid @RequestBody User user) {
+        User updated = userService.updateUserById(id, user, userId);
+        log.info("User {} updated user {}", userId, id);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+        @RequestHeader("userId") UUID userId,
+        @PathVariable Integer id) {
         userService.deleteUserById(id, userId);
-        log.info("User {} deleted user by id {}", userId, id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/delete/username/{username}")
-    public ResponseEntity<Void> deleteByUsername(
-            @RequestHeader("userId") UUID userId,
-            @PathVariable String username) {
-        userService.deleteUserByUsername(username, userId);
-        log.info("User {} deleted user by username {}", userId, username);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/patchPhoneNumber/{id}/{phoneNumber}")
-    public ResponseEntity<Optional<User>> patchPhoneNumber(
-            @RequestHeader("userId") UUID userId,
-            @PathVariable int id,
-            @PathVariable String phoneNumber) {
-        log.info("User {} patching phone number for id {} → {}", userId, id, phoneNumber);
-        return ResponseEntity.ok(userService.patchPhoneNumber(id, phoneNumber, userId));
-    }
-
-    @PatchMapping("/patchEmail/{id}/{email}")
-    public ResponseEntity<Optional<User>> patchEmail(
-            @RequestHeader("userId") UUID userId,
-            @PathVariable int id,
-            @PathVariable String email) {
-        log.info("User {} patching email for id {} → {}", userId, id, email);
-        return ResponseEntity.ok(userService.patchEmail(id, email, userId));
-    }
-
-    @PutMapping("/updateById/{id}")
-    public ResponseEntity<Void> updateUserById(
-            @RequestHeader("userId") UUID userId,
-            @PathVariable int id,
-            @RequestBody User user) {
-        userService.updateUserById(id, user, userId);
-        log.info("User {} updating user by id {}: {}", userId, id, user);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/updateByUsername/{username}")
-    public ResponseEntity<Void> updateUserByUsername(
-            @RequestHeader("userId") UUID userId,
-            @PathVariable String username,
-            @RequestBody User user) {
-        userService.updateUserByUsername(username, user, userId);
-        log.info("User {} updating user by username {}: {}", userId, username, user);
+        log.info("User {} deleted user {}", userId, id);
         return ResponseEntity.noContent().build();
     }
 }
