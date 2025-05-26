@@ -2,14 +2,13 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-  # Сам Prometheus (по умолчанию)
+  # Сам Prometheus
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
 
-  # Наш Spring Boot
+  # Spring Boot + Micrometer
   - job_name: 'spring-actuator'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: ['app:8080']  # внутри сети Docker
-        labels:
+      - targets: ['app:8080']

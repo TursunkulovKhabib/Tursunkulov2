@@ -8,7 +8,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>org.tursunkulov</groupId>
@@ -20,22 +20,9 @@
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
-        <!-- Override Flyway version to support PostgreSQL 17.x -->
-        <flyway.version>10.26.0</flyway.version>
-        <!-- PostgreSQL driver version compatible with PG 17 -->
+        <!-- PostgreSQL driver, совместимый с PG 14 -->
         <postgresql.version>42.6.0</postgresql.version>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- Enforce Flyway version -->
-            <dependency>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-core</artifactId>
-                <version>${flyway.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Boot Starters -->
@@ -97,7 +84,7 @@
             <version>2.2.0</version>
         </dependency>
 
-        <!-- Flyway -->
+        <!-- Flyway — версия берётся из BOM Spring Boot -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -218,5 +205,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
